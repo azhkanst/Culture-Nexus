@@ -160,7 +160,7 @@ function NodePageContent({ params }: NodePageProps) {
           {/* Node Image */}
           {node.image && (
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold text-white mb-4">Image</h2>
+              {/*<h2 className="text-2xl font-semibold text-white mb-4">Image</h2>*/}
               <div className="rounded-lg overflow-hidden shadow-md">
                 <img src={node.image || "/placeholder.svg"} alt={node.title} className="w-full h-64 object-cover" />
               </div>
