@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getCurrentMap, addNode, type Node, type NodeSize } from "@/lib/node-storage"
+import { getCurrentMap, editNode, type Node, type NodeSize } from "@/lib/node-storage"
 import { isAdmin } from "@/lib/auth"
 import ProtectedRoute from "@/components/protected-route"
 
@@ -29,8 +29,15 @@ const predefinedColors = [
   "#6b7280", // Gray
 ]
 
-function AddNodePageContent() {
+interface EditNodePageProps {
+  params: {
+    id: string
+  }
+}
+
+function EditNodePageContent({ params }: EditNodePageProps) {
   const router = useRouter()
+  const [node, setNode] = useState<Node | null>(null)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [image, setImage] = useState<string>("")
@@ -58,11 +65,34 @@ function AddNodePageContent() {
       return
     }
 
-    // Set available nodes
-    setAvailableNodes(currentMap.nodes)
-    setFilteredNodes(currentMap.nodes)
+    const foundNode = currentMap.nodes.find((n) => n.id.toLowerCase() === params.id.toLowerCase())
+    if (!foundNode) {
+      router.push("/")
+      return
+    }
+
+    // Set node data
+    setNode(foundNode)
+    setTitle(foundNode.title)
+    setDescription(foundNode.description || "")
+    setImage(foundNode.image || "")
+    setSize(foundNode.size)
+    setColor(foundNode.color)
+    setExternalLinks(foundNode.externalLinks || [])
+
+    // Set available nodes (excluding current node)
+    const otherNodes = currentMap.nodes.filter((n) => n.id !== foundNode.id)
+    setAvailableNodes(otherNodes)
+    setFilteredNodes(otherNodes)
+
+    // Set current connections
+    const currentConnections = currentMap.connections
+      .filter((conn) => conn.from === foundNode.id || conn.to === foundNode.id)
+      .map((conn) => (conn.from === foundNode.id ? conn.to : conn.from))
+
+    setSelectedConnections(currentConnections)
     setLoading(false)
-  }, [router])
+  }, [params.id, router])
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -130,7 +160,7 @@ function AddNodePageContent() {
     e.preventDefault()
 
     if (!isAdmin()) {
-      alert("Only administrators can add nodes")
+      alert("Only administrators can edit nodes")
       return
     }
 
@@ -139,8 +169,12 @@ function AddNodePageContent() {
       return
     }
 
-    addNode(
+    if (!node) return
+
+    editNode(
+      node.id,
       {
+        label: title.trim(),
         title: title.trim(),
         description: description.trim(),
         image: image || undefined,
@@ -151,7 +185,7 @@ function AddNodePageContent() {
       selectedConnections,
     )
 
-    router.push("/")
+    router.push(`/node/${node.id.toLowerCase()}`)
   }
 
   const getNodeById = (id: string) => availableNodes.find((node) => node.id === id)
@@ -176,20 +210,36 @@ function AddNodePageContent() {
     )
   }
 
+  if (!node) {
+    return (
+      <div className="min-h-screen bg-gray-900 p-8">
+        <div className="max-w-2xl mx-auto">
+          <Link href="/">
+            <Button variant="outline" className="mb-6 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Graph
+            </Button>
+          </Link>
+          <div className="text-center text-gray-300">Node not found</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-2xl mx-auto">
-        <Link href="/">
+        <Link href={`/node/${node.id.toLowerCase()}`}>
           <Button variant="outline" className="mb-6 bg-transparent border-gray-600 text-gray-200 hover:bg-gray-800">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Graph
+            Back to Node
           </Button>
         </Link>
 
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Add New Node</CardTitle>
-            <p className="text-sm text-gray-300">Create a new node and add it to the graph</p>
+            <CardTitle className="text-2xl text-white">Edit Node</CardTitle>
+            <p className="text-sm text-gray-300">Update node properties and connections</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -369,7 +419,7 @@ function AddNodePageContent() {
                         }`}
                         style={{ backgroundColor: color }}
                       >
-                        {title.charAt(0).toUpperCase() || "N"}
+                        {title.charAt(0).toUpperCase() || node.title.charAt(0).toUpperCase()}
                       </div>
                     </div>
                   </div>
@@ -421,7 +471,7 @@ function AddNodePageContent() {
               </div>
 
               <div>
-                <Label className="text-gray-200">Connections (Optional)</Label>
+                <Label className="text-gray-200">Connections</Label>
                 <div className="mt-2 space-y-4">
                   {/* Selected connections */}
                   {selectedConnections.length > 0 && (
@@ -499,12 +549,12 @@ function AddNodePageContent() {
 
               <div className="flex gap-3">
                 <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                  Create Node
+                  Save Changes
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => router.push("/")}
+                  onClick={() => router.push(`/node/${node.id.toLowerCase()}`)}
                   className="border-gray-600 text-gray-200 hover:bg-gray-700"
                 >
                   Cancel
@@ -518,10 +568,10 @@ function AddNodePageContent() {
   )
 }
 
-export default function AddNodePage() {
+export default function EditNodePage({ params }: EditNodePageProps) {
   return (
     <ProtectedRoute>
-      <AddNodePageContent />
+      <EditNodePageContent params={params} />
     </ProtectedRoute>
   )
 }
