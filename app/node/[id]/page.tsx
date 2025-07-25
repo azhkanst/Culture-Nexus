@@ -154,7 +154,7 @@ function NodePageContent({ params }: NodePageProps) {
         <div className="bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-700">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">{node.title}</h1>
-            <p className="text-gray-300">Node details and information</p>
+            {/* <p className="text-gray-300">Node details and information</p>*/}
           </div>
 
           {/* Node Image */}
@@ -191,7 +191,7 @@ function NodePageContent({ params }: NodePageProps) {
           )}
 
           <div className="mt-8 pt-6 border-t border-gray-700">
-            <h3 className="text-lg font-semibold text-white mb-4">Node Properties</h3>
+            {/*<h3 className="text-lg font-semibold text-white mb-4">Node Properties</h3>*/}
             <div className="grid grid-cols-1 gap-4 text-sm">
               {currentMap.connections.filter((conn) => conn.from === node.id || conn.to === node.id).length > 0 ? (
                 <div>

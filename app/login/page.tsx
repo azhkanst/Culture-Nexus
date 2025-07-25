@@ -45,8 +45,8 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">Node Graph System</h1>
-          <p className="text-gray-300">Choose your access level to continue</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Culture Nexus</h1>
+          {/*<p className="text-gray-300">Choose your access level to continue</p>*/}
         </div>
 
         {/* Admin Login Card */}
@@ -153,7 +153,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="text-center text-xs text-gray-400">
-          <p>Choose admin mode for full functionality or guest mode for read-only access</p>
+          {/*<p>Choose admin mode for full functionality or guest mode for read-only access</p>*/}
         </div>
       </div>
     </div>

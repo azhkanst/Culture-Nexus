@@ -455,7 +455,7 @@ function EditNodePageContent({ params }: EditNodePageProps) {
                       type="button"
                       variant="outline"
                       onClick={() => document.getElementById("image")?.click()}
-                      className="flex items-center gap-2 border-gray-600 text-gray-200 hover:bg-gray-700"
+                      className="flex items-center gap-2 border-gray-600 text-black hover:bg-gray-700"
                     >
                       <Upload className="w-4 h-4" />
                       {image ? "Change Image" : "Upload Image"}
@@ -555,7 +555,7 @@ function EditNodePageContent({ params }: EditNodePageProps) {
                   type="button"
                   variant="outline"
                   onClick={() => router.push(`/node/${node.id.toLowerCase()}`)}
-                  className="border-gray-600 text-gray-200 hover:bg-gray-700"
+                  className="border-gray-600 text-black hover:bg-gray-700"
                 >
                   Cancel
                 </Button>

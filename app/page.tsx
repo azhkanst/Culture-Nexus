@@ -550,8 +550,8 @@ function NodeGraphContent() {
       <div className="max-w-5xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Node Graph Visualization</h1>
-            <p className="text-gray-300 mt-1">Current Map: {currentMapTitle}</p>
+            <h1 className="text-gray-300 mt-1">Node Graph</h1>
+            <p className="text-3xl font-bold text-white">{currentMapTitle}</p>
           </div>
           <div className="flex items-center gap-3">
             {/* User Info */}

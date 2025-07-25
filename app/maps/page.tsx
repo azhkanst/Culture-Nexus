@@ -188,7 +188,7 @@ function MapsPageContent() {
                     type="button"
                     variant="outline"
                     onClick={() => setShowCreateForm(false)}
-                    className="border-gray-600 text-gray-200 hover:bg-gray-700"
+                    className="border-gray-600 text-black hover:bg-gray-700"
                   >
                     Cancel
                   </Button>
